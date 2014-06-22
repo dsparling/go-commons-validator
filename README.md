@@ -27,4 +27,4 @@ Make sure [Git is installed](http://git-scm.com/downloads) on your machine and i
 	fmt.Println(email.Validate("test@example.com"))
 
 	// false
-	fmt.Println(creditcard.Validate("testexample.com"))
+	fmt.Println(email.Validate("testexample.com"))
