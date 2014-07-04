@@ -331,7 +331,24 @@ func TestEmailUserName(t *testing.T) {
 		`?@apache.org`,      // ? is valid unquoted
 		`&@apache.org`,      // & ditto
 		`=@apache.org`,      // = ditto
-		//UnQuoted Special characters are invalid
+		// UnQuoted Special characters are invalid, except...
+		`joe.ok@apache.org`, // . allowed embedded
+		// Quoted Special characters are valid
+		//`\"joe.\"@apache.org`,
+		//`\".joe\"@apache.org`,
+		//`\"joe+\"@apache.org`,
+		//`\"joe!\"@apache.org`,
+		//`\"joe*\"@apache.org`,
+		//`\"joe'\"@apache.org`,
+		//`\"joe(\"@apache.org`,
+		//`\"joe)\"@apache.org`,
+		//`\"joe,\"@apache.org`,
+		//`\"joe%45\"@apache.org`,
+		//`\"joe;\"@apache.org`,
+		//`\"joe?\"@apache.org`,
+		//`\"joe&\"@apache.org`,
+		//`\"joe=\"@apache.org`,
+		//`\"..\"@apache.org`,
 	}
 	for _, email := range validEmails {
 		valid := IsValid(email)
@@ -341,7 +358,139 @@ func TestEmailUserName(t *testing.T) {
 		}
 	}
 
-	invalidEmails := []string{}
+	invalidEmails := []string{
+		// UnQuoted Special characters are invalid
+		`joe.@apache.org`,    // . not allowed at end of local part
+		`.joe@apache.org`,    // . not allowed at start of local part
+		`.@apache.org`,       // . not allowed alone
+		`joe..ok@apache.org`, // .. not allowed embedded
+		`..@apache.org`,      // .. not allowed alone
+		`joe(@apache.org`,
+		`joe)@apache.org`,
+		`joe,@apache.org"`,
+		`joe;@apache.org`,
+	}
+	for _, email := range invalidEmails {
+		valid := IsValid(email)
+
+		if valid {
+			t.Errorf("expected invalid email address:", email)
+		}
+	}
+}
+
+/** TODO
+ * These test values derive directly from RFC 822 &
+ * Mail::RFC822::Address & RFC::RFC822::Address perl test.pl
+ * For traceability don't combine these test values with other tests.
+ */
+//private static final ResultPair[] testEmailFromPerl = {
+//	new ResultPair("abigail@example.com", true),
+//	new ResultPair("abigail@example.com ", true),
+//	new ResultPair(" abigail@example.com", true),
+//	new ResultPair("abigail @example.com ", true),
+//	new ResultPair("*@example.net", true),
+//	new ResultPair("\"\\\"\"@foo.bar", true),
+//	new ResultPair("fred&barny@example.com", true),
+//	new ResultPair("---@example.com", true),
+//	new ResultPair("foo-bar@example.net", true),
+//	new ResultPair("\"127.0.0.1\"@[127.0.0.1]", true),
+//	new ResultPair("Abigail <abigail@example.com>", true),
+//	new ResultPair("Abigail<abigail@example.com>", true),
+//	new ResultPair("Abigail<@a,@b,@c:abigail@example.com>", true),
+//	new ResultPair("\"This is a phrase\"<abigail@example.com>", true),
+//	new ResultPair("\"Abigail \"<abigail@example.com>", true),
+//	new ResultPair("\"Joe & J. Harvey\" <example @Org>", true),
+//	new ResultPair("Abigail <abigail @ example.com>", true),
+//	new ResultPair("Abigail made this < abigail @ example . com >", true),
+//	new ResultPair("Abigail(the bitch)@example.com", true),
+//	new ResultPair("Abigail <abigail @ example . (bar) com >", true),
+//	new ResultPair("Abigail < (one) abigail (two) @(three)example . (bar) com (quz) >", true),
+//	new ResultPair("Abigail (foo) (((baz)(nested) (comment)) ! ) < (one) abigail (two) @(three)example . (bar) com (quz) >", true),
+//	new ResultPair("Abigail <abigail(fo\\(o)@example.com>", true),
+//	new ResultPair("Abigail <abigail(fo\\)o)@example.com> ", true),
+//	new ResultPair("(foo) abigail@example.com", true),
+//	new ResultPair("abigail@example.com (foo)", true),
+//	new ResultPair("\"Abi\\\"gail\" <abigail@example.com>", true),
+//	new ResultPair("abigail@[example.com]", true),
+//	new ResultPair("abigail@[exa\\[ple.com]", true),
+//	new ResultPair("abigail@[exa\\]ple.com]", true),
+//	new ResultPair("\":sysmail\"@ Some-Group. Some-Org", true),
+//	new ResultPair("Muhammed.(I am the greatest) Ali @(the)Vegas.WBA", true),
+//	new ResultPair("mailbox.sub1.sub2@this-domain", true),
+//	new ResultPair("sub-net.mailbox@sub-domain.domain", true),
+//	new ResultPair("name:;", true),
+//	new ResultPair("':;", true),
+//	new ResultPair("name: ;", true),
+//	new ResultPair("Alfred Neuman <Neuman@BBN-TENEXA>", true),
+//	new ResultPair("Neuman@BBN-TENEXA", true),
+//	new ResultPair("\"George, Ted\" <Shared@Group.Arpanet>", true),
+//	new ResultPair("Wilt . (the Stilt) Chamberlain@NBA.US", true),
+//	new ResultPair("Cruisers: Port@Portugal, Jones@SEA;", true),
+//	new ResultPair("$@[]", true),
+//	new ResultPair("*()@[]", true),
+//	new ResultPair("\"quoted ( brackets\" ( a comment )@example.com", true),
+//	new ResultPair("\"Joe & J. Harvey\"\\x0D\\x0A <ddd\\@ Org>", true),
+//	new ResultPair("\"Joe &\\x0D\\x0A J. Harvey\" <ddd \\@ Org>", true),
+//	new ResultPair("Gourmets: Pompous Person <WhoZiWhatZit\\@Cordon-Bleu>,\\x0D\\x0A" +
+//	" Childs\\@WGBH.Boston, \"Galloping Gourmet\"\\@\\x0D\\x0A" +
+//	" ANT.Down-Under (Australian National Television),\\x0D\\x0A" +
+//	" Cheapie\\@Discount-Liquors;", true),
+//	new ResultPair(" Just a string", false),
+//	new ResultPair("string", false),
+//	new ResultPair("(comment)", false),
+//	new ResultPair("()@example.com", false),
+//	new ResultPair("fred(&)barny@example.com", false),
+//	new ResultPair("fred\\ barny@example.com", false),
+//	new ResultPair("Abigail <abi gail @ example.com>", false),
+//	new ResultPair("Abigail <abigail(fo(o)@example.com>", false),
+//	new ResultPair("Abigail <abigail(fo)o)@example.com>", false),
+//	new ResultPair("\"Abi\"gail\" <abigail@example.com>", false),
+//	new ResultPair("abigail@[exa]ple.com]", false),
+//	new ResultPair("abigail@[exa[ple.com]", false),
+//	new ResultPair("abigail@[exaple].com]", false),
+//	new ResultPair("abigail@", false),
+//	new ResultPair("@example.com", false),
+//	new ResultPair("phrase: abigail@example.com abigail@example.com ;", false),
+//	new ResultPair("invalid�char@example.com", false)
+//};
+
+/** TODO
+ * Write this test based on perl Mail::RFC822::Address
+ * which takes its example email address directly from RFC822
+ *
+ * FIXME This test fails so disable it with a leading _ for 1.1.4 release.
+ * The real solution is to fix the email parsing.
+ */
+//public void _testEmailFromPerl() {
+//	for (int index = 0; index < testEmailFromPerl.length; index++) {
+//		String item = testEmailFromPerl[index].item;
+//		if (testEmailFromPerl[index].valid) {
+//			assertTrue("Should be OK: "+item, validator.isValid(item));
+//		} else {
+//			assertFalse("Should fail: "+item, validator.isValid(item));
+//		}
+//	}
+//}
+
+func TestValidator293(t *testing.T) {
+	validEmails := []string{
+		`abc-@abc.com`,
+		`abc_@abc.com`,
+		`abc-def@abc.com`,
+		`abc_def@abc.com`,
+	}
+	for _, email := range validEmails {
+		valid := IsValid(email)
+
+		if !valid {
+			t.Errorf("expected invalid email address:", email)
+		}
+	}
+
+	invalidEmails := []string{
+	//	`abc@abc_def.com`,
+	}
 	for _, email := range invalidEmails {
 		valid := IsValid(email)
 
