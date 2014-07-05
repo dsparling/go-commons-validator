@@ -16,54 +16,54 @@
  *
  * http://svn.apache.org/viewvc/commons/proper/validator/trunk/src/test/java/org/apache/commons/validator/routines/DomainValidatorTest.java?view=log
  */
-package validator
+package domainvalidator
 
 import (
 	"testing"
 )
 
 func TestValidDomains(t *testing.T) {
-	//validDomains := []string{
-	//	`apache.org`,         // apache.org should validate
-	//	`www.google.com`,     // www.google.com should validate
-	//	`test-domain.com`,    // test-domain.com should validate
-	//	`test---domain.com`,  // test---domain.com should validate
-	//	`test-d-o-m-ain.com`, // test-d-o-m-ain.com should validate
-	//	`as.uk`,              // two-letter domain label should validate
-	//	`ApAchE.Org`,         // case-insensitive ApAchE.Org should validate
-	//	`z.com`,              // single-character domain label should validate
-	//	`i.have.an-example.domain.name`, // i.have.an-example.domain.name should validate
-	//}
-	//for _, domain := range validDomains {
-	//	valid := IsValid(domain)
+	validDomains := []string{
+		`apache.org`,         // apache.org should validate
+		`www.google.com`,     // www.google.com should validate
+		`test-domain.com`,    // test-domain.com should validate
+		`test---domain.com`,  // test---domain.com should validate
+		`test-d-o-m-ain.com`, // test-d-o-m-ain.com should validate
+		`as.uk`,              // two-letter domain label should validate
+		`ApAchE.Org`,         // case-insensitive ApAchE.Org should validate
+		`z.com`,              // single-character domain label should validate
+		`i.have.an-example.domain.name`, // i.have.an-example.domain.name should validate
+	}
+	for _, domain := range validDomains {
+		valid := IsValid(domain)
 
-	//	if !valid {
-	//		t.Errorf("expected valid domain:", domain)
-	//	}
-	//}
+		if !valid {
+			t.Errorf("expected valid domain:", domain)
+		}
+	}
 }
 
 func TestInvalidDomains(t *testing.T) {
-	//invalidDomains := []string{
-	//	`.org`, //bare TLD .org shouldn't validate
-	//	` apache.org `, // domain name with spaces shouldn't validate
-	//	`apa che.org`, // domain name containing spaces shouldn't validate
-	//	`-testdomain.name`, // domain name starting with dash shouldn't validate
-	//	`testdomain-.name`, // domain name ending with dash shouldn't validate
-	//	`---c.com`, // domain name starting with multiple dashes shouldn't validate
-	//	`c--.com`, // domain name ending with multiple dashes shouldn't validate
-	//	`apache.rog`, // domain name with invalid TLD shouldn't validate
-	//	`http://www.apache.org`, // URL shouldn't validate
-	//	` `, // Empty string shouldn't validate as domain name
-	//	``,    assertFalse("Null shouldn't validate as domain name", validator.isValid(null));
-	//}
-	//for _, domain := range invalidDomains {
-	//	valid := IsValid(domain)
+	invalidDomains := []string{
+		`.org`,             //bare TLD .org shouldn't validate
+		` apache.org `,     // domain name with spaces shouldn't validate
+		`apa che.org`,      // domain name containing spaces shouldn't validate
+		`-testdomain.name`, // domain name starting with dash shouldn't validate
+		`testdomain-.name`, // domain name ending with dash shouldn't validate
+		`---c.com`,         // domain name starting with multiple dashes shouldn't validate
+		`c--.com`,          // domain name ending with multiple dashes shouldn't validate
+		//`apache.rog`,            // domain name with invalid TLD shouldn't validate
+		`http://www.apache.org`, // URL shouldn't validate
+		` `, // Empty string shouldn't validate as domain name
+		//``,    assertFalse("Null shouldn't validate as domain name", validator.isValid(null));
+	}
+	for _, domain := range invalidDomains {
+		valid := IsValid(domain)
 
-	//	if valid {
-	//		t.Errorf("expected invalid domain:", domain)
-	//	}
-	//}
+		if valid {
+			t.Errorf("expected invalid domain:", domain)
+		}
+	}
 }
 
 //func TestValidTopLevelDomains(t *testing.T) {

@@ -16,7 +16,7 @@
  *
  * http://svn.apache.org/viewvc/commons/proper/validator/trunk/src/test/java/org/apache/commons/validator/routines/EmailValidatorTest.java?view=log
  */
-package validator
+package emailvalidator
 
 import (
 	"testing"
