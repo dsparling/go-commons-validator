@@ -7,7 +7,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/dsparling/go-commons-validator/email"
+	"github.com/dsparling/go-commons-validator/emailvalidator"
 )
 
 func main() {
