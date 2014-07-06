@@ -45,17 +45,17 @@ func TestValidDomains(t *testing.T) {
 
 func TestInvalidDomains(t *testing.T) {
 	invalidDomains := []string{
-		`.org`,             //bare TLD .org shouldn't validate
-		` apache.org `,     // domain name with spaces shouldn't validate
-		`apa che.org`,      // domain name containing spaces shouldn't validate
-		`-testdomain.name`, // domain name starting with dash shouldn't validate
-		`testdomain-.name`, // domain name ending with dash shouldn't validate
-		`---c.com`,         // domain name starting with multiple dashes shouldn't validate
-		`c--.com`,          // domain name ending with multiple dashes shouldn't validate
-		//`apache.rog`,            // domain name with invalid TLD shouldn't validate
+		`.org`,                  //bare TLD .org shouldn't validate
+		` apache.org `,          // domain name with spaces shouldn't validate
+		`apa che.org`,           // domain name containing spaces shouldn't validate
+		`-testdomain.name`,      // domain name starting with dash shouldn't validate
+		`testdomain-.name`,      // domain name ending with dash shouldn't validate
+		`---c.com`,              // domain name starting with multiple dashes shouldn't validate
+		`c--.com`,               // domain name ending with multiple dashes shouldn't validate
+		`apache.rog`,            // domain name with invalid TLD shouldn't validate
 		`http://www.apache.org`, // URL shouldn't validate
 		` `, // Empty string shouldn't validate as domain name
-		//``,    assertFalse("Null shouldn't validate as domain name", validator.isValid(null));
+		////``,    assertFalse("Null shouldn't validate as domain name", validator.isValid(null));
 	}
 	for _, domain := range invalidDomains {
 		valid := IsValid(domain)
@@ -66,108 +66,108 @@ func TestInvalidDomains(t *testing.T) {
 	}
 }
 
-//func TestValidTopLevelDomains(t *testing.T) {
-//	// infrastructure TLDs
-//	validInfrastructureTopLevelDomains := []string{
-//		`.arpa`, // .arpa should validate as iTLD
-//	}
-//	for _, domain := range validInfrastructureTopLevelDomains {
-//		valid := IsInfrastructureTld(domain)
-//
-//		if !valid {
-//			t.Errorf("expected valid instrastructure tld:", domain)
-//		}
-//	}
-//
-//	// generic TLDs
-//	validGenericTopLevelDomains := []string{
-//		`.name`, // .name should validate as gTLD
-//	}
-//	for _, domain := range validGenericTopLevelDomains {
-//		valid := IsGenericTld(domain)
-//
-//		if !valid {
-//			t.Errorf("expected valid generic tld:", domain)
-//		}
-//	}
-//
-//	// country code TLDs
-//	validCountryCodeTopLevelDomains := []string{
-//		`.uk`, // .uk should validate as ccTLD
-//	}
-//	for _, domain := range validCountryCodeTopLevelDomains {
-//		valid := IsValidCountryCodeTld(domain)
-//
-//		if !valid {
-//			t.Errorf("expected valid country code tld:", domain)
-//		}
-//	}
-//
-//	// case-insensitive
-//	validTopLevelDomains := []string{
-//		`.COM`, // .COM should validate as TLD
-//		`.BiZ`, // .BiZ should validate as TLD"
-//	}
-//	for _, domain := range validTopLevelDomains {
-//		valid := IsValidTld(domain)
-//
-//		if !valid {
-//			t.Errorf("expected valid tld:", domain)
-//		}
-//	}
-//}
+func TestValidTopLevelDomains(t *testing.T) {
+	// infrastructure TLDs
+	validInfrastructureTopLevelDomains := []string{
+		`.arpa`, // .arpa should validate as iTLD
+	}
+	for _, domain := range validInfrastructureTopLevelDomains {
+		valid := IsValidInfrastructureTld(domain)
 
-//func TestInvalidTopLevelDomains(t *testing.T) {
-//	// infrastructure TLDs
-//	invalidInfrastructureTopLevelDomains := []string{
-//		`.com`, // .com shouldn't validate as iTLD
-//	}
-//	for _, domain := range invalidInfrastructureTopLevelDomains {
-//		valid := IsInfrastructureTld(domain)
-//
-//		if valid {
-//			t.Errorf("expected invalid instrastructure tld:", domain)
-//		}
-//	}
-//
-//	// generic TLDs
-//	invalidGenericTopLevelDomains := []string{
-//		`.us`, // .us shouldn't validate as gTLD
-//	}
-//	for _, domain := range invalidGenericTopLevelDomains {
-//		valid := IsGenericTld(domain)
-//
-//		if valid {
-//			t.Errorf("expected invalid generic tld:", domain)
-//		}
-//	}
-//
-//	// country code TLDs
-//	invalidCountryCodeTopLevelDomains := []string{
-//		`.org`, // .org shouldn't validate as ccTLD
-//	}
-//	for _, domain := range invalidCountryCodeTopLevelDomains {
-//		valid := IsValidCountryCodeTld(domain)
-//
-//		if valid {
-//			t.Errorf("expected invalid country code tld:", domain)
-//		}
-//	}
-//
-//	// corner cases
-//	invalidTopLevelDomains := []string{
-//		`.nope`, // invalid TLD shouldn't validate
-//		``, // empty string shouldn't validate as TLD
-//assertFalse("null shouldn't validate as TLD", validator.isValid(null));
-//	}
-//	for _, domain := range invalidTopLevelDomains {
-//		valid := IsValidTld(domain)
-//
-//		if valid {
-//			t.Errorf("expected invalid tld:", domain)
-//		}
-//	}
-//}
+		if !valid {
+			t.Errorf("expected valid instrastructure tld:", domain)
+		}
+	}
+
+	// generic TLDs
+	validGenericTopLevelDomains := []string{
+		`.name`, // .name should validate as gTLD
+	}
+	for _, domain := range validGenericTopLevelDomains {
+		valid := IsValidGenericTld(domain)
+
+		if !valid {
+			t.Errorf("expected valid generic tld:", domain)
+		}
+	}
+
+	// country code TLDs
+	validCountryCodeTopLevelDomains := []string{
+		`.uk`, // .uk should validate as ccTLD
+	}
+	for _, domain := range validCountryCodeTopLevelDomains {
+		valid := IsValidCountryCodeTld(domain)
+
+		if !valid {
+			t.Errorf("expected valid country code tld:", domain)
+		}
+	}
+
+	// case-insensitive
+	validTopLevelDomains := []string{
+		`.COM`, // .COM should validate as TLD
+		`.BiZ`, // .BiZ should validate as TLD"
+	}
+	for _, domain := range validTopLevelDomains {
+		valid := IsValidTld(domain)
+
+		if !valid {
+			t.Errorf("expected valid tld:", domain)
+		}
+	}
+}
+
+func TestInvalidTopLevelDomains(t *testing.T) {
+	// infrastructure TLDs
+	invalidInfrastructureTopLevelDomains := []string{
+		`.com`, // .com shouldn't validate as iTLD
+	}
+	for _, domain := range invalidInfrastructureTopLevelDomains {
+		valid := IsValidInfrastructureTld(domain)
+
+		if valid {
+			t.Errorf("expected invalid instrastructure tld:", domain)
+		}
+	}
+
+	// generic TLDs
+	invalidGenericTopLevelDomains := []string{
+		`.us`, // .us shouldn't validate as gTLD
+	}
+	for _, domain := range invalidGenericTopLevelDomains {
+		valid := IsValidGenericTld(domain)
+
+		if valid {
+			t.Errorf("expected invalid generic tld:", domain)
+		}
+	}
+
+	// country code TLDs
+	invalidCountryCodeTopLevelDomains := []string{
+		`.org`, // .org shouldn't validate as ccTLD
+	}
+	for _, domain := range invalidCountryCodeTopLevelDomains {
+		valid := IsValidCountryCodeTld(domain)
+
+		if valid {
+			t.Errorf("expected invalid country code tld:", domain)
+		}
+	}
+
+	// corner cases
+	invalidTopLevelDomains := []string{
+		`.nope`, // invalid TLD shouldn't validate
+		``,      // empty string shouldn't validate as TLD
+		//assertFalse("null shouldn't validate as TLD", validator.isValid(null));
+	}
+	for _, domain := range invalidTopLevelDomains {
+		valid := IsValidTld(domain)
+
+		if valid {
+			t.Errorf("expected invalid tld:", domain)
+		}
+	}
+}
 
 // TODO
 //public void testAllowLocal() {
@@ -204,4 +204,3 @@ func TestInvalidDomains(t *testing.T) {
 //			t.Errorf("expected valid IDN", domain)
 //		}
 //	}
-//}

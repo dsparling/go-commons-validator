@@ -19,22 +19,15 @@
 package domainvalidator
 
 import (
-	"fmt"
+	//"fmt"
 	"regexp"
 	"strings"
 )
 
 const (
-	// error parsing regexp: invalid character class range: `\p{Alnum}`
-	//DOMAIN_LABEL_REGEX = "\\p{Alnum}(?>[\\p{Alnum}-]*\\p{Alnum})*"
-	// error parsing regexp: invalid or unsupported Perl syntax: `(?>`
-	//DOMAIN_LABEL_REGEX = "[A-Za-z0-9](?>[[A-Za-z0-9]-]*[A-Za-z0-9])*"
-	//DOMAIN_LABEL_REGEX = "[A-Za-z0-9]([[A-Za-z0-9]-]*[A-Za-z0-9])*"
-	DOMAIN_LABEL_REGEX = "[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])*"
-	// error parsing regexp: invalid character class range: `\p{Alpha}`
-	//TOP_LABEL_REGEX    = "\\p{Alpha}{2,}"
-	TOP_LABEL_REGEX   = "[A-Za-z]{2,}"
-	DOMAIN_NAME_REGEX = "^(?:" + DOMAIN_LABEL_REGEX + "\\.)+" + "(" + TOP_LABEL_REGEX + ")$"
+	DOMAIN_LABEL_REGEX = "-*[a-zA-Z0-9-]{1,63}[-]*" // TODO - Fix work around with leading/trailing hypens
+	TOP_LABEL_REGEX    = "[A-Za-z]{2,}"
+	DOMAIN_NAME_REGEX  = "^(?:" + "(" + DOMAIN_LABEL_REGEX + ")" + "\\.)+" + "(" + TOP_LABEL_REGEX + ")$"
 )
 
 var INFRASTRUCTURE_TLDS []string
@@ -53,14 +46,21 @@ var LOCAL_TLDS []string
  * @return true if the parameter is a valid domain name
  */
 func IsValid(domain string) bool {
-	fmt.Println("IsValid:(domain) ", domain)
+	//fmt.Println("IsValid:(domain) ", domain)
 	domainRegex, _ := regexp.Compile(DOMAIN_NAME_REGEX)
 	match := domainRegex.MatchString(domain)
 	if match {
 		groups := domainRegex.FindStringSubmatch(domain)
 		if groups != nil && len(groups) > 0 {
-			// TODO/FIX
-			return IsValidTld(groups[0])
+			dnsLabel := groups[1]
+			// Check prefix/suffix for now to get around invalid or unsupported Perl syntax in REGEX
+			if strings.HasPrefix(dnsLabel, "-") {
+				return false
+			} else if strings.HasSuffix(dnsLabel, "-") {
+				return false
+			}
+			tld := groups[2]
+			return IsValidTld(tld)
 			// TODO
 			//} else if(allowLocal) {
 			//    if (hostnameRegex.isValid(domain)) {
@@ -79,7 +79,7 @@ func IsValid(domain string) bool {
  * @return true if the parameter is a TLD
  */
 func IsValidTld(tld string) bool {
-	fmt.Println("IsValidTld(tld) ", tld)
+	//fmt.Println("IsValidTld(tld) ", tld)
 	//if(allowLocal && isValidLocalTld(tld)) {
 	//   return true;
 	//}
@@ -94,7 +94,6 @@ func IsValidTld(tld string) bool {
  * @return true if the parameter is an infrastructure TLD
  */
 func IsValidInfrastructureTld(iTld string) bool {
-	//return INFRASTRUCTURE_TLD_LIST.contains(chompLeadingDot(iTld.toLowerCase()));
 	return contains(INFRASTRUCTURE_TLDS, strings.TrimPrefix(strings.ToLower(iTld), "."))
 }
 
@@ -106,7 +105,6 @@ func IsValidInfrastructureTld(iTld string) bool {
  * @return true if the parameter is a generic TLD
  */
 func IsValidGenericTld(gTld string) bool {
-	//return GENERIC_TLD_LIST.contains(chompLeadingDot(gTld.toLowerCase()));
 	return contains(GENERIC_TLDS, strings.TrimPrefix(strings.ToLower(gTld), "."))
 }
 
@@ -118,7 +116,6 @@ func IsValidGenericTld(gTld string) bool {
  * @return true if the parameter is a country code TLD
  */
 func IsValidCountryCodeTld(ccTld string) bool {
-	//return COUNTRY_CODE_TLD_LIST.contains(chompLeadingDot(ccTld.toLowerCase()));
 	return contains(COUNTRY_CODE_TLDS, strings.TrimPrefix(strings.ToLower(ccTld), "."))
 }
 
@@ -130,7 +127,6 @@ func IsValidCountryCodeTld(ccTld string) bool {
  * @return true if the parameter is an local TLD
  */
 func IsValidLocalTld(lTld string) bool {
-	//return LOCAL_TLD_LIST.contains(chompLeadingDot(iTld.toLowerCase()));
 	return contains(LOCAL_TLDS, strings.TrimPrefix(strings.ToLower(lTld), "."))
 }
 
@@ -142,15 +138,6 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
-
-// TODO
-//private String chompLeadingDot(String str) {
-//    if (str.startsWith(".")) {
-//        return str.substring(1);
-//    } else {
-//        return str;
-//    }
-//}
 
 func init() {
 	// ----- TLDs defined by IANA
