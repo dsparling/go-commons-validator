@@ -27,12 +27,15 @@ import (
 
 const (
 	// TODO: error parsing regexp: invalid character class range: `\p{Cntrl}`
+	// \p{Cntrl} 	A control character: [\x00-\x1F\x7F]
 	//SPECIAL_CHARS = "\\p{Cntrl}\\(\\)<>@,;:'\\\\\\\"\\.\\[\\]"
-	SPECIAL_CHARS = "\\(\\)<>@,;:'\\\\\\\"\\.\\[\\]"
+	//SPECIAL_CHARS = "\\(\\)<>@,;:'\\\\\\\"\\.\\[\\]"
+	SPECIAL_CHARS = "\x00-\x1F\x7F\\(\\)<>@,;:'\\\\\\\"\\.\\[\\]"
 	VALID_CHARS   = "[^\\s" + SPECIAL_CHARS + "]"
 	QUOTED_USER   = "(\"[^\"]*\")"
 	WORD          = "((" + VALID_CHARS + "|')+|" + QUOTED_USER + ")"
 
+	// \p{ASCII} 	All ASCII:[\x00-\x7F]
 	LEGAL_ASCII_REGEX = `^\\p{ASCII}+$`
 	EMAIL_REGEX       = `^(.+)@(.+?)$`
 	USER_REGEX        = "^" + WORD + "(\\." + WORD + ")*$"
