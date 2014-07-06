@@ -21,6 +21,7 @@ package domainvalidator
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 const (
@@ -52,12 +53,13 @@ var LOCAL_TLDS []string
  * @return true if the parameter is a valid domain name
  */
 func IsValid(domain string) bool {
+	fmt.Println("IsValid:(domain) ", domain)
 	domainRegex, _ := regexp.Compile(DOMAIN_NAME_REGEX)
 	match := domainRegex.MatchString(domain)
 	if match {
 		groups := domainRegex.FindStringSubmatch(domain)
 		if groups != nil && len(groups) > 0 {
-			// TODO
+			// TODO/FIX
 			return IsValidTld(groups[0])
 			// TODO
 			//} else if(allowLocal) {
@@ -77,21 +79,12 @@ func IsValid(domain string) bool {
  * @return true if the parameter is a TLD
  */
 func IsValidTld(tld string) bool {
-	fmt.Println("IsValidTld ", tld)
+	fmt.Println("IsValidTld(tld) ", tld)
 	//if(allowLocal && isValidLocalTld(tld)) {
 	//   return true;
 	//}
 	return IsValidInfrastructureTld(tld) || IsValidGenericTld(tld) || IsValidCountryCodeTld(tld)
 }
-
-//public boolean isValidTld(String tld) {
-//    if(allowLocal && isValidLocalTld(tld)) {
-//       return true;
-//    }
-//    return isValidInfrastructureTld(tld)
-//            || isValidGenericTld(tld)
-//            || isValidCountryCodeTld(tld);
-//}
 
 /**
  * Returns true if the specified <code>String</code> matches any
@@ -101,9 +94,8 @@ func IsValidTld(tld string) bool {
  * @return true if the parameter is an infrastructure TLD
  */
 func IsValidInfrastructureTld(iTld string) bool {
-	fmt.Println("INFTRASTRUCURE_TLDS: ", INFRASTRUCTURE_TLDS)
 	//return INFRASTRUCTURE_TLD_LIST.contains(chompLeadingDot(iTld.toLowerCase()));
-	return true // TODO
+	return contains(INFRASTRUCTURE_TLDS, strings.TrimPrefix(strings.ToLower(iTld), "."))
 }
 
 /**
@@ -114,9 +106,8 @@ func IsValidInfrastructureTld(iTld string) bool {
  * @return true if the parameter is a generic TLD
  */
 func IsValidGenericTld(gTld string) bool {
-	fmt.Println("GENERIC_TLDS: ", GENERIC_TLDS)
 	//return GENERIC_TLD_LIST.contains(chompLeadingDot(gTld.toLowerCase()));
-	return true // TODO
+	return contains(GENERIC_TLDS, strings.TrimPrefix(strings.ToLower(gTld), "."))
 }
 
 /**
@@ -127,9 +118,8 @@ func IsValidGenericTld(gTld string) bool {
  * @return true if the parameter is a country code TLD
  */
 func IsValidCountryCodeTld(ccTld string) bool {
-	fmt.Println("COUNTRY_CODE_TLDS: ", COUNTRY_CODE_TLDS)
 	//return COUNTRY_CODE_TLD_LIST.contains(chompLeadingDot(ccTld.toLowerCase()));
-	return true // TODO
+	return contains(COUNTRY_CODE_TLDS, strings.TrimPrefix(strings.ToLower(ccTld), "."))
 }
 
 /**
@@ -139,10 +129,18 @@ func IsValidCountryCodeTld(ccTld string) bool {
  * @param iTld the parameter to check for local TLD status
  * @return true if the parameter is an local TLD
  */
-func IsValidLocalTld(iTld string) bool {
-	fmt.Println("LOCAL_TLDS: ", LOCAL_TLDS)
+func IsValidLocalTld(lTld string) bool {
 	//return LOCAL_TLD_LIST.contains(chompLeadingDot(iTld.toLowerCase()));
-	return true // TODO
+	return contains(LOCAL_TLDS, strings.TrimPrefix(strings.ToLower(lTld), "."))
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 // TODO
@@ -438,7 +436,6 @@ func init() {
 		"zw", // Zimbabwe
 	}
 
-	//    private static final String[] LOCAL_TLDS = new String[] {
 	LOCAL_TLDS = []string{
 		"localhost",   // RFC2606 defined
 		"localdomain", // Also widely used as localhost.localdomain
